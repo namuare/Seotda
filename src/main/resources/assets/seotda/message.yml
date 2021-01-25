@@ -1,16 +1,11 @@
-command:
-  addplayer: "Successfully added players."
-  removeplayer: "Successfully removed players."
-  gamestart: "Seotda game has started."
-  gamestop: "Seotda game has ended. resetting game..."
-  currentplayers: "Current players(%players_per_limit%): %players%"
+command.addplayer: "Successfully added players."
+command.removeplayer: "Successfully removed players."
+command.gamestart: "Seotda game has started."
+command.gamestop: "Seotda game has ended. resetting game..."
+command.currentplayers: "Current players(%players_per_limit%): %players%"
 
-error:
-  whileplaying: "Cannot add or remove players while playing."
-  alreadystarted: "Seotda game has already started."
-  addplayer: "Could not add players in game queue. It may be already added or you are trying to add more than the maximum."
-  removeplayer: "Could not remove players in game queue. Please check and try again."
-
-game:
-  gamestart: "Seotda game has started."
+error.whileplaying: "Cannot add or remove players while playing."
+error.alreadystarted: "Seotda game has already started."
+error.addplayer: "Could not add players in game queue. It may be already added or you are trying to add more than the maximum."
+error.removeplayer: "Could not remove players in game queue. Please check and try again."
 
