@@ -23,8 +23,10 @@ class LimitedQueueTest {
         queue.add("1")
 
         assert(!queue.addAll(listOf("1"))) // False: When trying to add items that already contains
-        assert(queue.addAll(listOf("1", "2", "3")))
-        assert(!queue.addAll(listOf("4")))
-        println(queue.joinToString())
+        assert(queue.addAll(listOf("1", "2", "3"))) // True: When trying to add items without exceeding the limit, Items already contained are not added
+        assert(queue.joinToString() == "1, 2, 3") // Items already contained are not added
+        println(queue.joinToString()) // Check: Items already contained are not added
+
+        assert(!queue.addAll(listOf("4", "5", "6"))) // False: When trying to add more than the maximum.
     }
 }
