@@ -12,6 +12,7 @@ import org.spongepowered.api.event.game.state.GamePostInitializationEvent
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent
 import org.spongepowered.api.plugin.Dependency
 import org.spongepowered.api.plugin.Plugin
+import java.nio.file.Files
 import java.nio.file.Path
 
 @Plugin(
@@ -43,6 +44,7 @@ class Seotda {
 
     @Listener
     fun onPreInit(event: GamePreInitializationEvent) {
+        if (Files.notExists(configPath)) Files.createDirectories(configPath)
         Sponge.getAssetManager().getAsset(this, "config.yml").get().copyToFile(configPath.resolve("config.yml"))
         Sponge.getAssetManager().getAsset(this, "message.yml").get().copyToFile(configPath.resolve("message.yml"))
     }
