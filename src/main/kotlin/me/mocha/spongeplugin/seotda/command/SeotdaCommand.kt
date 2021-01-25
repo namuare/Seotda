@@ -2,6 +2,7 @@ package me.mocha.spongeplugin.seotda.command
 
 import me.mocha.spongeplugin.seotda.service.SeotdaGameService
 import me.mocha.spongeplugin.seotda.util.TextBuilder
+import me.mocha.spongeplugin.seotda.util.defer
 import org.spongepowered.api.command.CommandResult
 import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.command.args.CommandContext
@@ -37,29 +38,32 @@ object SeotdaCommand {
         .permission("seotda.command.seotda")
         .child(add, "add")
         .child(remove, "remove")
-        .child(start, "start")
-        .child(end, "end")
+        .child(start, "start", "play")
+        .child(end, "stop", "end")
         .build()
 
-    private fun addPlayer(src: CommandSource, args: CommandContext): CommandResult {
+    private fun addPlayer(src: CommandSource, args: CommandContext): CommandResult = defer {
+        it.defer { src.sendMessage(currentPlayers()) }
+
         val players = args.getAll<Player>(Text.of("player"))
-        return if (SeotdaGameService.addPlayer(*players.toTypedArray())) {
+        if (SeotdaGameService.addPlayer(*players.toTypedArray())) {
             src.sendMessage(TextBuilder.success("Successfully added players."))
             CommandResult.successCount(players.size)
         } else {
             if (SeotdaGameService.isPlaying) {
                 src.sendMessage(TextBuilder.error("Cannot add or remove players while playing."))
             } else {
-                src.sendMessage(TextBuilder.error("Could not add players in game queue. It may have already been added to the maximum."))
+                src.sendMessage(TextBuilder.error("Could not add players in game queue. It may be already added or you are trying to add more than the maximum."))
             }
             CommandResult.empty()
-
         }
     }
 
-    private fun removePlayer(src: CommandSource, args: CommandContext): CommandResult {
+    private fun removePlayer(src: CommandSource, args: CommandContext): CommandResult = defer {
+        it.defer { src.sendMessage(currentPlayers()) }
+
         val players = args.getAll<Player>(Text.of("player"))
-        return if (SeotdaGameService.removePlayer(*players.toTypedArray())) {
+        if (SeotdaGameService.removePlayer(*players.toTypedArray())) {
             src.sendMessage(TextBuilder.success("Successfully removed players."))
             CommandResult.successCount(players.size)
         } else {
@@ -87,6 +91,12 @@ object SeotdaCommand {
         SeotdaGameService.end()
         src.sendMessage(TextBuilder.success("Seotda game has ended. resetting game..."))
         return CommandResult.success()
+    }
+
+    private fun currentPlayers(): Text {
+        val playersPerLimit = "${SeotdaGameService.players.size}/${SeotdaGameService.players.limit}"
+        val players = SeotdaGameService.players.joinToString { it.name }
+        return TextBuilder.success("Current players($playersPerLimit): $players")
     }
 
 
