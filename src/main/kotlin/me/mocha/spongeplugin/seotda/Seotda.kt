@@ -5,7 +5,7 @@ import me.mocha.spongeplugin.seotda.command.SeotdaCommand
 import me.mocha.spongeplugin.seotda.service.SeotdaGameService
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.config.DefaultConfig
+import org.spongepowered.api.config.ConfigDir
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameInitializationEvent
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent
@@ -29,7 +29,7 @@ class Seotda {
     lateinit var logger: Logger
 
     @Inject
-    @DefaultConfig(sharedRoot = true)
+    @ConfigDir(sharedRoot = false)
     lateinit var configPath: Path
 
     companion object {
@@ -43,7 +43,8 @@ class Seotda {
 
     @Listener
     fun onPreInit(event: GamePreInitializationEvent) {
-        Sponge.getAssetManager().getAsset(this, "config.conf").get().copyToFile(configPath)
+        Sponge.getAssetManager().getAsset(this, "config.yml").get().copyToFile(configPath.resolve("config.yml"))
+        Sponge.getAssetManager().getAsset(this, "message.yml").get().copyToFile(configPath.resolve("message.yml"))
     }
 
     @Listener

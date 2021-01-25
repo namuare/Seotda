@@ -3,7 +3,7 @@ package me.mocha.spongeplugin.seotda.service
 import me.mocha.spongeplugin.seotda.Seotda
 import me.mocha.spongeplugin.seotda.task.WoolRouletteTask
 import me.mocha.spongeplugin.seotda.util.LimitedQueue
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader
+import ninja.leaping.configurate.yaml.YAMLConfigurationLoader
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.scheduler.Task
 import java.util.concurrent.TimeUnit
@@ -18,7 +18,7 @@ object SeotdaGameService {
         private set
 
     init {
-        val config = HoconConfigurationLoader.builder().setPath(Seotda.instance.configPath).build()
+        val config = YAMLConfigurationLoader.builder().setPath(Seotda.instance.configPath.resolve("config.yml")).build()
         val root = config.load()
 
         this.MAX_PLAYER = root.getNode("max_player").getInt(8)
