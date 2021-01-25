@@ -17,6 +17,8 @@ dependencies {
     val sponge = create("org.spongepowered:spongeapi:7.3.0")
     api(sponge)
     kapt(sponge)
+
+    testImplementation("junit:junit:4.12")
 }
 
 tasks {
