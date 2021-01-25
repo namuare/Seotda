@@ -1,15 +1,18 @@
 package me.mocha.spongeplugin.seotda.service
 
 import me.mocha.spongeplugin.seotda.Seotda
+import me.mocha.spongeplugin.seotda.task.WoolRouletteTask
 import me.mocha.spongeplugin.seotda.util.LimitedQueue
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.scheduler.Task
+import java.util.concurrent.TimeUnit
 
 object SeotdaGameService {
     private val logger = Seotda.instance.logger
 
     val MAX_PLAYER: Int
-    val players : LimitedQueue<Player>
+    val players: LimitedQueue<Player>
 
     var isPlaying = false
         private set
@@ -25,6 +28,12 @@ object SeotdaGameService {
     fun start() {
         isPlaying = true
         logger.info("game start with player ${this.players.joinToString { it.name }}.")
+
+        this.players.forEach {
+            Task.builder().interval(500, TimeUnit.MILLISECONDS)
+                .execute(WoolRouletteTask(it))
+                .submit(Seotda.instance)
+        }
     }
 
     fun end() {
