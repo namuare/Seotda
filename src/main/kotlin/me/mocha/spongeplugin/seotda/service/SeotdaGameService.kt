@@ -5,6 +5,11 @@ import me.mocha.spongeplugin.seotda.task.WoolRouletteTask
 import me.mocha.spongeplugin.seotda.util.LimitedQueue
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.item.ItemTypes
+import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.item.inventory.entity.Hotbar
+import org.spongepowered.api.item.inventory.property.SlotIndex
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes
 import org.spongepowered.api.scheduler.Task
 import java.util.concurrent.TimeUnit
 
@@ -13,8 +18,9 @@ object SeotdaGameService {
 
     val MAX_PLAYER: Int
     val players: LimitedQueue<Player>
+    val tasks = mutableListOf<Task>()
 
-    var isPlaying = false
+    var isStarted = false
         private set
 
     init {
@@ -26,28 +32,41 @@ object SeotdaGameService {
     }
 
     fun start() {
-        isPlaying = true
+        isStarted = true
         logger.info("game start with player ${this.players.joinToString { it.name }}.")
 
         this.players.forEach {
-            Task.builder().interval(500, TimeUnit.MILLISECONDS)
+            tasks.add(Task.builder().interval(500, TimeUnit.MILLISECONDS)
                 .execute(WoolRouletteTask(it))
-                .submit(Seotda.instance)
+                .submit(Seotda.instance))
         }
     }
 
     fun end() {
-        isPlaying = false
-        this.players.clear()
+        isStarted = false
         logger.info("seotda game has ended.")
+
+        tasks.forEach { it.cancel() }
+        players.forEach {
+            val hotbar = it.inventory.query<Hotbar>(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar::class.java))
+            hotbar[SlotIndex(0)] = ItemStack.of(ItemTypes.AIR)
+            hotbar[SlotIndex(1)] = ItemStack.of(ItemTypes.AIR)
+        }
+
+        this.players.clear()
+        this.tasks.clear()
     }
 
     fun addPlayer(vararg players: Player): Boolean {
-        return if (!isPlaying) this.players.addAll(players) else false
+        return if (!isStarted) this.players.addAll(players) else false
     }
 
     fun removePlayer(vararg players: Player): Boolean {
-        return if (!isPlaying) this.players.removeAll(players) else false
+        return if (!isStarted) this.players.removeAll(players) else false
     }
+
+    fun isInQueue(player: Player) = this.players.contains(player)
+
+    fun isPlaying(player: Player) = isStarted && isInQueue(player)
 
 }

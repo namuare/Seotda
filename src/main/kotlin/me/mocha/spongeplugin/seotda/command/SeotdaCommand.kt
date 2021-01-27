@@ -50,7 +50,7 @@ object SeotdaCommand {
             src.sendMessage(MessageBuilder.success("command.addplayer"))
             CommandResult.successCount(players.size)
         } else {
-            if (SeotdaGameService.isPlaying) {
+            if (SeotdaGameService.isStarted) {
                 src.sendMessage(MessageBuilder.error("error.whileplaying"))
             } else {
                 src.sendMessage(MessageBuilder.error("error.addplayer"))
@@ -67,7 +67,7 @@ object SeotdaCommand {
             src.sendMessage(MessageBuilder.success("command.removeplayer"))
             CommandResult.successCount(players.size)
         } else {
-            if (SeotdaGameService.isPlaying) {
+            if (SeotdaGameService.isStarted) {
                 src.sendMessage(MessageBuilder.error("error.whileplaying"))
             } else {
                 src.sendMessage(MessageBuilder.error("error.removeplayer"))
@@ -77,7 +77,7 @@ object SeotdaCommand {
     }
 
     private fun start(src: CommandSource, args: CommandContext): CommandResult {
-        return if (SeotdaGameService.isPlaying) {
+        return if (SeotdaGameService.isStarted) {
             src.sendMessage(MessageBuilder.error("error.alreadystarted"))
             CommandResult.empty()
         } else {
