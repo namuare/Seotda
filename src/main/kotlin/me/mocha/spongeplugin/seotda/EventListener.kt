@@ -7,7 +7,6 @@ import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.block.ChangeBlockEvent
 import org.spongepowered.api.event.cause.EventContextKeys
 import org.spongepowered.api.event.filter.cause.Root
-import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent
 import org.spongepowered.api.event.item.inventory.DropItemEvent
 import org.spongepowered.api.event.item.inventory.InteractItemEvent
@@ -51,6 +50,15 @@ object EventListener {
 
     @Listener
     fun onInventoryClick(event: ClickInventoryEvent) {
+        event.context.get(EventContextKeys.OWNER).orElse(null)?.let { player ->
+            if (player is Player && SeotdaGameService.isPlaying(player)) {
+                event.transactions.forEach { t ->
+                    if (WoolRoulette.isRoulette(t.original.createStack())) event.isCancelled = true
+                    if (WoolRoulette.isRoulette(t.final.createStack())) event.isCancelled = true
+                    if (WoolRoulette.isRoulette(t.default.createStack())) event.isCancelled = true
+                }
+            }
+        }
     }
 
 }

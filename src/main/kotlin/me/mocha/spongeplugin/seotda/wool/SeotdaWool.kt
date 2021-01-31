@@ -19,7 +19,7 @@ enum class SeotdaWool(val score: Int, val woolCode: Int) {
     PURPLE(7, 10),
     BLACK(8, 15);
 
-    fun createItemStack(): ItemStack = ItemStack.of(ItemTypes.WOOL).apply {
+    fun createItemStack(quantity: Int = 1): ItemStack = ItemStack.of(ItemTypes.WOOL, quantity).apply {
         offer(Keys.DISPLAY_NAME, Text.of(score))
         setRawData(toContainer().apply {
             set(DataQuery.of("UnsafeDamage"), woolCode)
