@@ -1,6 +1,7 @@
 package me.mocha.spongeplugin.seotda
 
 import me.mocha.spongeplugin.seotda.service.SeotdaGameService
+import me.mocha.spongeplugin.seotda.wool.SeotdaWool
 import me.mocha.spongeplugin.seotda.wool.WoolRoulette
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
@@ -20,7 +21,7 @@ object EventListener {
         val item = event.itemStack.createStack()
 
         if (SeotdaGameService.isPlaying(player) && WoolRoulette.isRoulette(item)) {
-            WoolRoulette.offerRandomWool(player)
+            offerRandomWool(player)
         }
     }
 
@@ -30,7 +31,7 @@ object EventListener {
         val item = snapshot.createStack()
 
         if (SeotdaGameService.isPlaying(player) && WoolRoulette.isRoulette(item)) {
-            WoolRoulette.offerRandomWool(player)
+            offerRandomWool(player)
             event.isCancelled = true
         }
     }
@@ -59,6 +60,11 @@ object EventListener {
                 }
             }
         }
+    }
+
+    fun offerRandomWool(player: Player) {
+        SeotdaGameService.roulettes[player]?.reduceQuantity()
+        player.inventory.offer(SeotdaWool.random().createItemStack())
     }
 
 }

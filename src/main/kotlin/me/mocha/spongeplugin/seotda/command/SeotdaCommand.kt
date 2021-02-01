@@ -26,6 +26,7 @@ object SeotdaCommand {
 
     private val start: CommandSpec = CommandSpec.builder()
         .permission("")
+        .arguments(GenericArguments.optional(GenericArguments.integer(Text.of("num"))))
         .executor { src, args -> start(src, args) }
         .build()
 
@@ -81,7 +82,8 @@ object SeotdaCommand {
             src.sendMessage(MessageBuilder.error("error.alreadystarted"))
             CommandResult.empty()
         } else {
-            SeotdaGameService.start()
+            val num = args.getOne<Int>(Text.of("num")).orElse(1)
+            SeotdaGameService.start(num)
             src.sendMessage(MessageBuilder.success("command.gamestart"))
             CommandResult.success()
         }

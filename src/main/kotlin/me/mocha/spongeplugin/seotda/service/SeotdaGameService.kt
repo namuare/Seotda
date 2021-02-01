@@ -27,7 +27,7 @@ object SeotdaGameService {
         this.players = LimitedQueue(this.MAX_PLAYER)
     }
 
-    fun start(num: Int = 2) {
+    fun start(num: Int = 1) {
         isStarted = true
         logger.info("game start with player ${this.players.joinToString { it.name }}.")
 
