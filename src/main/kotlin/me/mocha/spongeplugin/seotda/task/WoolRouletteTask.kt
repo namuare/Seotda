@@ -21,6 +21,7 @@ class WoolRouletteTask(var quantity: Int, val player: Player) : Consumer<Task> {
         if (quantity <= 0) {
             hotbar.poll(SlotIndex(0))
             t.cancel()
+            return
         }
 
         hotbar[SlotIndex(0)] = WoolRoulette.createItemStack(wools[current], quantity)
