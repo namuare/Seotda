@@ -19,19 +19,19 @@ object SeotdaCommand {
         .build()
 
     private val remove: CommandSpec = CommandSpec.builder()
-        .permission("")
+        .permission("seotda.command.seotda.removeplayer")
         .arguments(GenericArguments.allOf(GenericArguments.player(Text.of("player"))))
         .executor { src, args -> removePlayer(src, args) }
         .build()
 
     private val start: CommandSpec = CommandSpec.builder()
-        .permission("")
+        .permission("seotda.command.seotda.startgame")
         .arguments(GenericArguments.optional(GenericArguments.integer(Text.of("num"))))
         .executor { src, args -> start(src, args) }
         .build()
 
     private val end: CommandSpec = CommandSpec.builder()
-        .permission("")
+        .permission("seotda.command.seotda.stopgame")
         .executor { src, args -> end(src, args) }
         .build()
 

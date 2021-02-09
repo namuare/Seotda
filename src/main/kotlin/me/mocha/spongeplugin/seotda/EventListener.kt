@@ -27,10 +27,10 @@ object EventListener {
 
     @Listener
     fun onPlace(event: ChangeBlockEvent.Place, @Root player: Player) {
-        val snapshot = event.cause.context.get(EventContextKeys.USED_ITEM).get()
-        val item = snapshot.createStack()
+        val snapshot = event.cause.context.get(EventContextKeys.USED_ITEM).orElse(null)
+        val item = snapshot?.createStack()
 
-        if (SeotdaGameService.isPlaying(player) && WoolRoulette.isRoulette(item)) {
+        if (item != null && SeotdaGameService.isPlaying(player) && WoolRoulette.isRoulette(item)) {
             offerRandomWool(player)
             event.isCancelled = true
         }

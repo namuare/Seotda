@@ -5,6 +5,9 @@ import me.mocha.spongeplugin.seotda.task.WoolRouletteTask
 import me.mocha.spongeplugin.seotda.util.LimitedQueue
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.item.inventory.entity.Hotbar
+import org.spongepowered.api.item.inventory.property.SlotIndex
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes
 import org.spongepowered.api.scheduler.Task
 import java.util.concurrent.TimeUnit
 
@@ -45,6 +48,10 @@ object SeotdaGameService {
         logger.info("seotda game has ended.")
 
         tasks.forEach { task -> task.cancel() }
+        roulettes.forEach { p, _ ->
+            val hotbar = p.inventory.query<Hotbar>(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar::class.java))
+            hotbar.poll(SlotIndex(0))
+        }
 
         this.players.clear()
         this.tasks.clear()
